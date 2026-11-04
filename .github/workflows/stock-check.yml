@@ -2,8 +2,8 @@ name: Cek Stok SehatAqua
 
 on:
   schedule:
-    # Setiap 5 menit (interval minimum GitHub Actions).
-    - cron: "*/5 * * * *"
+    # Setiap 3 menit (interval minimum GitHub Actions).
+    - cron: "*/3 * * * *"
   workflow_dispatch:
 
 # Cegah dua run berjalan bersamaan dan mengirim notifikasi ganda.

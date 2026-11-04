@@ -6,3 +6,6 @@ state.json
 state.json.tmp
 /.env
 /note.txt
+/mainapp
+/debug.sh
+/readme.md

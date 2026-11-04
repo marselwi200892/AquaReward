@@ -1,0 +1,47 @@
+name: Cek Stok SehatAqua
+
+on:
+  schedule:
+    # Setiap 5 menit (interval minimum GitHub Actions).
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+# Cegah dua run berjalan bersamaan dan mengirim notifikasi ganda.
+concurrency:
+  group: sehataqua-stock-check
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache: false
+
+      # State (status stok terakhir + waktu notifikasi) disimpan di cache
+      # karena runner GitHub ephemeral. restore-keys mengambil cache terbaru.
+      - name: Pulihkan state
+        uses: actions/cache@v4
+        with:
+          path: state.json
+          key: sehataqua-state-${{ github.run_id }}
+          restore-keys: |
+            sehataqua-state-
+
+      - name: Cek stok
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TARGET_ITEM_ID: "38"
+          REMIND_MINUTES: "5"
+        run: go run .
+
+      # Cache baru (key run_id) otomatis disimpan di akhir job bila job sukses.

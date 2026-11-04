@@ -1,0 +1,8 @@
+# binary
+/sehataqua-monitor
+
+# state runtime (dikelola GitHub Actions cache saat di CI)
+state.json
+state.json.tmp
+/.env
+/note.txt

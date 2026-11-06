@@ -308,6 +308,7 @@ func loadConfig() config {
 		dryRun:    envBool("DRY_RUN"),
 	}
 	cfg.baseURL = strings.TrimRight(cfg.baseURL, "/")
+	//cfg.itemID = envInt("TARGET_ITEM_ID", 38)
 	cfg.itemID = envInt("TARGET_ITEM_ID", 38)
 
 	remindMinutes := envInt("REMIND_MINUTES", 5)

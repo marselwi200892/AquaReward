@@ -1,11 +1,16 @@
-# binary
+# binaries
 /sehataqua-monitor
+/mainapp
 
 # state runtime (dikelola GitHub Actions cache saat di CI)
 state.json
 state.json.tmp
+
+# local config
 /.env
 /note.txt
-/mainapp
 /debug.sh
 /readme.md
+
+# IDE
+.idea/

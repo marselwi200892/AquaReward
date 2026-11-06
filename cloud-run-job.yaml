@@ -1,0 +1,52 @@
+apiVersion: run.googleapis.com/v1
+kind: Job
+metadata:
+  name: sehataqua-stock-check
+  annotations:
+    run.googleapis.com/launch-stage: BETA
+spec:
+  template:
+    spec:
+      taskCount: 1
+      taskTimeout: 300s
+      maxRetries: 0
+      template:
+        spec:
+          containers:
+            - image: gcr.io/YOUR_PROJECT/sehataqua-monitor:latest
+              env:
+                - name: TARGET_ITEM_ID
+                  value: "38"
+                - name: BASE_URL
+                  value: "https://loyalty.sehataqua.co.id"
+                - name: PROGRAM_ID
+                  value: "1000112251223"
+                - name: REMIND_MINUTES
+                  value: "5"
+                - name: STATE_FILE
+                  value: "/tmp/state.json"
+                - name: TELEGRAM_BOT_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: telegram-credentials
+                      key: bot-token
+                - name: TELEGRAM_CHAT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: telegram-credentials
+                      key: chat-id
+              resources:
+                limits:
+                  cpu: "1"
+                  memory: 256Mi
+---
+# Required Secret – create it with:
+#   gcloud secrets create telegram-credentials \
+#     --replication-policy=automatic \
+#     --data-file=<(echo 'bot-token=YOUR_BOT_TOKEN
+# chat-id=YOUR_CHAT_ID')
+#
+# Then grant the Compute Engine default service account access:
+#   gcloud secrets add-iam-policy-binding telegram-credentials \
+#     --member=serviceAccount:$(gcloud projects describe YOUR_PROJECT --format='value(projectNumber)')-compute@developer.gserviceaccount.com \
+#     --role=roles/secretmanager.secretAccessor

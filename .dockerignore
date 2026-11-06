@@ -1,0 +1,23 @@
+# Binaries
+mainapp
+sehataqua-monitor
+
+# State files (runtime data)
+state.json
+state.json.tmp
+
+# IDE & local config
+.idea/
+.claude/
+.env
+note.txt
+
+# Git
+.git/
+.gitignore
+
+# Dev scripts
+debug.sh
+
+# Docs
+README.md

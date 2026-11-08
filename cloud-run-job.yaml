@@ -29,7 +29,7 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: telegram-credentials
-                      key: bot-token
+                    key: bot-token
                 - name: TELEGRAM_CHAT_ID
                   valueFrom:
                     secretKeyRef:

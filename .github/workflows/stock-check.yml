@@ -41,7 +41,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TARGET_ITEM_ID: "38"
-          REMIND_MINUTES: "5"
+          REMIND_MINUTES: "999"
         run: go run .
 
       # Cache baru (key run_id) otomatis disimpan di akhir job bila job sukses.

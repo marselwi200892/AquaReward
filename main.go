@@ -92,11 +92,13 @@ func run() error {
 	shouldNotify := false
 	reason := ""
 	switch {
-	case available && !prev.Available:
+	//case available && !prev.Available:
+	case available:
 		shouldNotify, reason = true, "stok baru tersedia"
-	case available && prev.Available && now.Sub(prev.LastNotifiedAt) >= cfg.remindFor:
-		shouldNotify, reason = true, "pengingat berkala (masih tersedia)"
-	case !available && prev.Available:
+		/*	case available && prev.Available && now.Sub(prev.LastNotifiedAt) >= cfg.remindFor:
+			shouldNotify, reason = true, "pengingat berkala (masih tersedia)"*/
+	//case !available && prev.Available:
+	case !available:
 		fmt.Println("stok kembali habis; tidak mengirim notifikasi")
 	}
 

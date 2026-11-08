@@ -5,6 +5,7 @@
 // perlu login / OTP WhatsApp sama sekali.
 package main
 
+
 import (
 	"bytes"
 	"encoding/json"
@@ -131,7 +132,7 @@ func evaluate(it *item) (available bool, stock int, hasUnlimited bool) {
 		if v.StatusVariant != "active" {
 			continue
 		}
-		if v.HasStock || v.Stock > 0 {
+		if v.eHasStock || v.Stock > 0 {
 			available = true
 			stock += v.Stock
 			if v.HasStock && v.Stock == 0 {
@@ -309,7 +310,7 @@ func loadConfig() config {
 	}
 	cfg.baseURL = strings.TrimRight(cfg.baseURL, "/")
 	//cfg.itemID = envInt("TARGET_ITEM_ID", 38)
-	cfg.itemID = envInt("TARGET_ITEM_ID", 38)
+	cfg.itemID = envInt("TARGET_ITEM_ID", 113)
 
 	remindMinutes := envInt("REMIND_MINUTES", 5)
 	if remindMinutes < 1 {

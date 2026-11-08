@@ -310,7 +310,7 @@ func loadConfig() config {
 	}
 	cfg.baseURL = strings.TrimRight(cfg.baseURL, "/")
 	//cfg.itemID = envInt("TARGET_ITEM_ID", 38)
-	cfg.itemID = envInt("TARGET_ITEM_ID", 113)
+	cfg.itemID = envInt("TARGET_ITEM_ID", 38)
 
 	remindMinutes := envInt("REMIND_MINUTES", 5)
 	if remindMinutes < 1 {

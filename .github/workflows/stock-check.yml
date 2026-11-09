@@ -57,7 +57,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TARGET_ITEM_ID: "113"
+          TARGET_ITEM_ID: "38"
           REMIND_MINUTES: "999"
         run: ./sehataqua-monitor
 

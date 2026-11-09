@@ -5,7 +5,6 @@
 // perlu login / OTP WhatsApp sama sekali.
 package main
 
-
 import (
 	"bytes"
 	"encoding/json"
@@ -271,33 +270,38 @@ func sendTelegram(cfg config, text string) error {
 		return errors.New("TELEGRAM_BOT_TOKEN dan TELEGRAM_CHAT_ID wajib diisi")
 	}
 
-	payload, err := json.Marshal(map[string]any{
-		"chat_id":                  cfg.tgChatID,
-		"text":                     text,
-		"disable_web_page_preview": false,
-	})
-	if err != nil {
-		return err
+	chatIds := strings.Split(cfg.tgChatID, ",")
+
+	for _, chatId := range chatIds {
+		payload, err := json.Marshal(map[string]any{
+			"chat_id":                  chatId,
+			"text":                     text,
+			"disable_web_page_preview": false,
+		})
+		if err != nil {
+			return err
+		}
+
+		endpoint := "https://api.telegram.org/bot" + cfg.tgToken + "/sendMessage"
+		req, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewReader(payload))
+		if err != nil {
+			return err
+		}
+		req.Header.Set("Content-Type", "application/json")
+
+		client := &http.Client{Timeout: 25 * time.Second}
+		resp, err := client.Do(req)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+
+		body, _ := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
+		if resp.StatusCode != http.StatusOK {
+			return fmt.Errorf("HTTP %d: %s", resp.StatusCode, truncate(string(body), 300))
+		}
 	}
 
-	endpoint := "https://api.telegram.org/bot" + cfg.tgToken + "/sendMessage"
-	req, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewReader(payload))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{Timeout: 25 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	body, _ := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("HTTP %d: %s", resp.StatusCode, truncate(string(body), 300))
-	}
 	return nil
 }
 

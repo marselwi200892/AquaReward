@@ -19,17 +19,34 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-go@v5
+      # Binary cache: karena source code jarang berubah, cache akan hit
+      # hampir setiap run — menghemat download Go toolchain (~15s) + kompilasi (~3s).
+      - name: Cache binary
+        id: cache-binary
+        uses: actions/cache@v6
+        with:
+          path: sehataqua-monitor
+          key: sehataqua-binary-${{ hashFiles('**/*.go', 'go.mod') }}
+          restore-keys: |
+            sehataqua-binary-
+
+      - name: Setup Go
+        if: steps.cache-binary.outputs.cache-hit != 'true'
+        uses: actions/setup-go@v7
         with:
           go-version: "1.22"
           cache: false
 
+      - name: Build binary
+        if: steps.cache-binary.outputs.cache-hit != 'true'
+        run: go build -o sehataqua-monitor .
+
       # State (status stok terakhir + waktu notifikasi) disimpan di cache
       # karena runner GitHub ephemeral. restore-keys mengambil cache terbaru.
       - name: Pulihkan state
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: state.json
           key: sehataqua-state-${{ github.run_id }}
@@ -42,6 +59,6 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TARGET_ITEM_ID: "38"
           REMIND_MINUTES: "999"
-        run: go run .
+        run: ./sehataqua-monitor
 
       # Cache baru (key run_id) otomatis disimpan di akhir job bila job sukses.
